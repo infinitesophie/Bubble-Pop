@@ -36,6 +36,15 @@ public class Bubble : MonoBehaviour
 
     private BubblesGrid grid;
 
+    void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other.tag == "ShotBubble")
+        {
+            ShotBubble b = other.gameObject.GetComponent<ShotBubble>();
+            grid.AddBubble(this, b);
+        }
+
+    }
 
     public void SetBubblePosition(BubblesGrid grid, int column, int row)
     {

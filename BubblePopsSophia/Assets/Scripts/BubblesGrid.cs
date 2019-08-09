@@ -29,19 +29,18 @@ public class BubblesGrid : MonoBehaviour
 
     private Bubble.BUBBLE_TYPE lastType;
 
-
-
-
+    private GameObject newBubbleGO;
+    
     void Start()
     {
-        lastType = (Bubble.BUBBLE_TYPE)Random.Range(0, 5);
+        lastType = (Bubble.BUBBLE_TYPE)Random.Range(0, 7);
         bubbleTypePool = new List<Bubble.BUBBLE_TYPE>();
         //approximately creating a 10000 bubble type for the level
         int i = 0;
         int total = 10000;
         while (i < total)
         {
-            bubbleTypePool.Add(GetBallType());
+            bubbleTypePool.Add(GetBubbleType());
             i++;
         }
         
@@ -50,7 +49,7 @@ public class BubblesGrid : MonoBehaviour
         BuildGrid();
     }
 
-    Bubble.BUBBLE_TYPE GetBallType()
+    Bubble.BUBBLE_TYPE GetBubbleType()
     {
         float random = Random.Range(0.0f, 1.0f);
         //changeTypeRate ensures difficulty of level if its small value then the bubbles will be more of similar colours
@@ -84,7 +83,7 @@ public class BubblesGrid : MonoBehaviour
         gridBubbles = new List<List<Bubble>>();
         //the offset X and Y are points from where the grid starts
         GRID_OFFSET_X = (COLUMNS * TILE_SIZE) * 0.5f;
-        GRID_OFFSET_Y = (ROWS * TILE_SIZE) * 0.5f;
+        GRID_OFFSET_Y = 4f;
 
         GRID_OFFSET_X -= TILE_SIZE * 0.5f;
         GRID_OFFSET_Y -= TILE_SIZE * 0.5f;
@@ -94,23 +93,22 @@ public class BubblesGrid : MonoBehaviour
         {
 
             List<Bubble> rowBalls = new List<Bubble>();
-
             for (int column = 0; column < COLUMNS; column++)
             {
-
-                var item = Instantiate(gridBallGO) as GameObject;
-                var Bubble = item.GetComponent<Bubble>();
-
-                Bubble.SetBubblePosition(this, column, row);
-                Bubble.SetType(bubbleTypePool[0]);
+                //instantiate a GO from the pool
+                GameObject item = Instantiate(gridBallGO) as GameObject;
+                Bubble bubble = item.GetComponent<Bubble>();
+                
+                bubble.SetBubblePosition(this, column, row);
+                bubble.SetType(bubbleTypePool[0]);
                 bubbleTypePool.RemoveAt(0);
 
-                Bubble.transform.parent = gameObject.transform;
-                rowBalls.Add(Bubble);
-
+                bubble.transform.parent = gameObject.transform;
+                rowBalls.Add(bubble);
+                //only a few lines are made visible rest all are hidden
                 if (gridBubbles.Count > lines)
                 {
-                    Bubble.gameObject.SetActive(false);
+                    bubble.gameObject.SetActive(false);
                 }
             }
 
@@ -120,8 +118,8 @@ public class BubblesGrid : MonoBehaviour
     public void AddLine()
     {
         //does top line have visible bubbles
-        var emptyFirstRow = true;
-        foreach (var b in gridBubbles[0])
+        bool emptyFirstRow = true;
+        foreach (Bubble b in gridBubbles[0])
         {
             if (b.gameObject.activeSelf)
             {
@@ -129,36 +127,89 @@ public class BubblesGrid : MonoBehaviour
                 break;
             }
         }
-
+        
         if (!emptyFirstRow)
         {
-            var r = ROWS - 2;
-            while (r >= 0)
+            int rowCount = ROWS - 2;
+            while (rowCount >= 0)
             {
-                foreach (var b in gridBubbles[r])
+                foreach (Bubble b in gridBubbles[rowCount])
                 {
                     if (b.gameObject.activeSelf)
                     {
-                        gridBubbles[r + 1][b.column].gameObject.SetActive(true);
-                        gridBubbles[r + 1][b.column].SetType(b.type);
+                        gridBubbles[rowCount + 1][b.column].gameObject.SetActive(true);
+                        gridBubbles[rowCount + 1][b.column].SetType(b.type);
                     }
                     else
                     {
-                        gridBubbles[r + 1][b.column].gameObject.SetActive(false);
+                        gridBubbles[rowCount + 1][b.column].gameObject.SetActive(false);
                     }
                 }
-                r--;
+                rowCount--;
             }
         }
 
-        foreach (var b in gridBubbles[0])
+        foreach (Bubble b in gridBubbles[0])
         {
             b.SetType(bubbleTypePool[0]);
             bubbleTypePool.RemoveAt(0);
             b.gameObject.SetActive(true);
         }
     }
+
+    public void AddBubble(Bubble collisionBall, ShotBubble shotBubble)
+    {
+
+        List<Bubble> neighbors = BallEmptyNeighbors(collisionBall);
+        float minDistance = 10000.0f;
+
+        GameObject newBubbleGO = Instantiate(gridBallGO) as GameObject;
+        Bubble newBubble = newBubbleGO.GetComponent<Bubble>();
+
+        foreach (Bubble b in neighbors)
+        {
+            float d = Vector2.Distance(b.transform.position, shotBubble.transform.position);
+            if (d < minDistance)
+            {
+                minDistance = d;
+                newBubble = b;
+            }
+        }
+        newBubble.SetType(shotBubble.type);
+        newBubbleGO.transform.position = shotBubble.transform.position;
+        newBubble.gameObject.SetActive(true);
+        newBubbleGO.SetActive(true);
+        shotBubble.gameObject.SetActive(false);
+
+    }
+
     
-    
+
+
+    List<Bubble> BallEmptyNeighbors(Bubble bubble)
+    {
+        var result = new List<Bubble>();
+        if (bubble.column + 1 < COLUMNS)
+        {
+            if (!gridBubbles[bubble.row][bubble.column + 1].gameObject.activeSelf)
+                result.Add(gridBubbles[bubble.row][bubble.column + 1]);
+        }
+
+        //left
+        if (bubble.column - 1 >= 0)
+        {
+            if (!gridBubbles[bubble.row][bubble.column - 1].gameObject.activeSelf)
+                result.Add(gridBubbles[bubble.row][bubble.column - 1]);
+        }
+        //top
+        if (bubble.row - 1 >= 0)
+        {
+            if (!gridBubbles[bubble.row - 1][bubble.column].gameObject.activeSelf)
+                result.Add(gridBubbles[bubble.row - 1][bubble.column]);
+        }
+
+        return result;
+    }
+
 
 }

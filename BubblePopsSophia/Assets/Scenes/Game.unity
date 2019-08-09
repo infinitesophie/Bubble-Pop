@@ -1665,10 +1665,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ROWS: 20
-  COLUMNS: 5
+  COLUMNS: 6
   TILE_SIZE: 0.8
   changeTypeRate: 0.2
-  lines: 5
+  lines: 4
   gridBallGO: {fileID: 7905311755237152614, guid: 0bd545b4ac8c27d44906fffa3d14767e,
     type: 3}
   GRID_OFFSET_X: 0
@@ -2435,7 +2435,7 @@ GameObject:
   - component: {fileID: 1219578974}
   m_Layer: 0
   m_Name: ShotBubble
-  m_TagString: Untagged
+  m_TagString: ShotBubble
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
