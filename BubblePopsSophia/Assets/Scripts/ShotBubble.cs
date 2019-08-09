@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerBall : MonoBehaviour
+public class ShotBubble : MonoBehaviour
 {
     public GameObject[] bubblesGO;
 

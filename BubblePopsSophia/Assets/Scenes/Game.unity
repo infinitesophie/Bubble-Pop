@@ -269,6 +269,12 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8542543295364928181, guid: bb1c2d4e0bd83d7498546132786733dd,
+        type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 3afbf3e535d030047874f361fb7ec346,
+        type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: bb1c2d4e0bd83d7498546132786733dd, type: 3}
 --- !u!4 &32629557 stripped
@@ -613,6 +619,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: 16OrangeBubble
+      objectReference: {fileID: 0}
+    - target: {fileID: 3410667953263631798, guid: bd33ba0076f535c46adfbb366de4f749,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3410667953263631753, guid: bd33ba0076f535c46adfbb366de4f749,
         type: 3}
@@ -1234,7 +1245,7 @@ GameObject:
   - component: {fileID: 587983718}
   - component: {fileID: 587983719}
   m_Layer: 0
-  m_Name: Bubble
+  m_Name: Shooter
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1300,7 +1311,8 @@ MonoBehaviour:
   - {fileID: 1968669016}
   aimDotPrefab: {fileID: 5601864330970447817, guid: a26e5d1daa54c8049bea37429d4de713,
     type: 3}
-  playerBall: {fileID: 1219578974}
+  shotBubble: {fileID: 1219578974}
+  grid: {fileID: 800999825}
 --- !u!1001 &617895275
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1623,6 +1635,58 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 745487166}
   m_CullTransparentMesh: 0
+--- !u!1 &800999824
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 800999826}
+  - component: {fileID: 800999825}
+  m_Layer: 0
+  m_Name: PlayableGrid
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &800999825
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 800999824}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d9685ec0f524b854b9bb381965520360, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ROWS: 20
+  COLUMNS: 5
+  TILE_SIZE: 0.8
+  changeTypeRate: 0.2
+  lines: 5
+  gridBallGO: {fileID: 7905311755237152614, guid: 0bd545b4ac8c27d44906fffa3d14767e,
+    type: 3}
+  GRID_OFFSET_X: 0
+  GRID_OFFSET_Y: 0
+--- !u!4 &800999826
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 800999824}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &864325013
 GameObject:
   m_ObjectHideFlags: 0
@@ -1687,7 +1751,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &934578185
 PrefabInstance:
@@ -1941,7 +2005,7 @@ RectTransform:
   m_Children:
   - {fileID: 1277619425}
   m_Father: {fileID: 0}
-  m_RootOrder: 3
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -2039,7 +2103,7 @@ PrefabInstance:
     - target: {fileID: 2460420942580155732, guid: 0e4b03df7a4780f4fb1c9d0f1abd492d,
         type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2460420942580155755, guid: 0e4b03df7a4780f4fb1c9d0f1abd492d,
         type: 3}
@@ -2355,7 +2419,7 @@ Transform:
   - {fileID: 453538852}
   - {fileID: 1219578976}
   m_Father: {fileID: 0}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1219578973
 GameObject:
@@ -2370,7 +2434,7 @@ GameObject:
   - component: {fileID: 1219578977}
   - component: {fileID: 1219578974}
   m_Layer: 0
-  m_Name: PlayerBall
+  m_Name: ShotBubble
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2784,6 +2848,12 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8542543295364928181, guid: bb1c2d4e0bd83d7498546132786733dd,
+        type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 3afbf3e535d030047874f361fb7ec346,
+        type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: bb1c2d4e0bd83d7498546132786733dd, type: 3}
 --- !u!4 &1324737793 stripped
@@ -3110,6 +3180,12 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8542543295364928181, guid: bb1c2d4e0bd83d7498546132786733dd,
+        type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 3afbf3e535d030047874f361fb7ec346,
+        type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: bb1c2d4e0bd83d7498546132786733dd, type: 3}
 --- !u!4 &1441499135 stripped

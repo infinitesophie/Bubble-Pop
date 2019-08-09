@@ -3,12 +3,13 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
-public class BubbleAim : MonoBehaviour
+public class PlayerController : MonoBehaviour
 {
     public GameObject[] bubblesGO;
     public GameObject[] nextBubblesGO;
     public GameObject aimDotPrefab;
-    public PlayerBall playerBall;
+    public ShotBubble shotBubble;
+    public BubblesGrid grid;
 
     private List<Vector2> dots;
     private List<GameObject> dottedLine;
@@ -16,10 +17,11 @@ public class BubbleAim : MonoBehaviour
     private int dotsLength = 30;
     private float dotGap = 0.3f;
 
-    private float playerBallProgress = 0.0f;
-    private float playerBallIncreement = 0.0f;
+    private float shotBubbleProgress = 0.0f;
+    private float shotBubbleInc = 0.0f;
     private int CurrentbubbleColorType = 0;
     private int nextbubbleColorType = 0;
+    private int bullets = 0;
 
     void Start()
     {
@@ -55,21 +57,16 @@ public class BubbleAim : MonoBehaviour
 
         if (Input.touches.Length > 0)
         {
-
             Touch touch = Input.touches[0];
-
             if (touch.phase == TouchPhase.Began)
-            {
-                MouseDown(touch.position);
-            }
+            {MouseDown(touch.position);}
+
             else if (touch.phase == TouchPhase.Canceled || touch.phase == TouchPhase.Ended)
-            {
-                MouseUp(touch.position);
-            }
+            {MouseUp(touch.position);}
+
             else if (touch.phase == TouchPhase.Moved || touch.phase == TouchPhase.Stationary)
-            {
-                MouseMove(touch.position);
-            }
+            {MouseMove(touch.position);}
+
             MouseMove(touch.position);
             return;
         }
@@ -84,21 +81,19 @@ public class BubbleAim : MonoBehaviour
             MouseUp(Input.mousePosition);
         }
         else if (mouseDown)
+        {   MouseMove(Input.mousePosition);}
+        //The above code determines when a touch press or drag or touch up has happened
+
+        if (shotBubble.gameObject.activeSelf)
         {
-            MouseMove(Input.mousePosition);
-        }
-
-        if (playerBall.gameObject.activeSelf)
-        {
-
-            playerBallProgress += playerBallIncreement;
-
-            if (playerBallProgress  > 1)
+            shotBubbleProgress += shotBubbleInc;
+            if (shotBubbleProgress  > 1)
             {
-                dots.RemoveAt(0);
+                dots.RemoveAt(0);   //removing the dots list 
+                //At the end of the path making the shot bubble disappear
                 if (dots.Count < 2)
                 {
-                    playerBall.gameObject.SetActive(false);
+                    shotBubble.gameObject.SetActive(false);
                     return;
                 }
                 else
@@ -106,12 +101,11 @@ public class BubbleAim : MonoBehaviour
                     InitPath();
                 }
             }
+            //determining the next move transform for the shot bubble similar to the dots
+            float px = dots[0].x + shotBubbleProgress * (dots[1].x - dots[0].x);
+            float py = dots[0].y + shotBubbleProgress * (dots[1].y - dots[0].y);
 
-            var px = dots[0].x + playerBallProgress * (dots[1].x - dots[0].x);
-            var py = dots[0].y + playerBallProgress * (dots[1].y - dots[0].y);
-
-            playerBall.transform.position = new Vector2(px, py);
-
+            shotBubble.transform.position = new Vector2(px, py);
             return;
         }
     }   
@@ -127,19 +121,20 @@ public class BubbleAim : MonoBehaviour
         // When Mouse is up the dots will disappear
         foreach (GameObject x in dottedLine)
             x.SetActive(false);
-        playerBallProgress = 0.0f;
+        shotBubbleProgress = 0.0f;
         print("MouseUpBubbleColor" + CurrentbubbleColorType);
-        playerBall.SetType((Bubble.BUBBLE_TYPE)CurrentbubbleColorType);
-        playerBall.gameObject.SetActive(true);
-        playerBall.transform.position = transform.position;
+        //Here the currentBubbleColor is shot from the shooter 
+        shotBubble.SetType((Bubble.BUBBLE_TYPE)CurrentbubbleColorType);
+        shotBubble.gameObject.SetActive(true);
+        shotBubble.transform.position = transform.position;
         InitPath();
-
+        //This Sets the color of next bubble to be shot
         SetNextBubbleColor();
     }
 
     void MouseMove(Vector2 touch)
     {
-        if (playerBall.gameObject.activeSelf)
+        if (shotBubble.gameObject.activeSelf)
             return;
 
         if (dots == null)
@@ -237,7 +232,7 @@ public class BubbleAim : MonoBehaviour
             if (index < dotsLength)
             {
                 //Here it is all about setting active the exact dots at exact place
-                var d = dottedLine[index];
+                GameObject d = dottedLine[index];
                 d.transform.position = new Vector2(px, py);
                 d.SetActive(true);
                 index++;
@@ -263,24 +258,32 @@ public class BubbleAim : MonoBehaviour
                 nextgo.SetActive(false);
                 CurrentbubbleColorType = count;
             }
-            if (count < 9)  //Check for arrayIndexOut of bounds
-                count++;
-            else
-                count = 0;
+            count++;
+            if (count > 10)  //Check for arrayIndexOut of bounds
+               count = 0;
             //print("CurrentbubbleColorType" + CurrentbubbleColorType);
         }
 
-        nextbubbleColorType = Random.Range(0, 10);
+        nextbubbleColorType = Random.Range(0, 7);   
+        //randomizing till 7(128 bubbletype) because I dont want bigger numbers 
         nextBubblesGO[nextbubbleColorType].SetActive(true);
+        bullets++;
+
+        if (bullets > 10)
+        {
+            bullets = 0;
+            grid.AddLine();
+        }
     }
 
     void InitPath()
     {
-        var start = dots[0];
-        var end = dots[1];
-        var length = Vector2.Distance(start, end);
-        var iterations = length / 0.15f;
-        playerBallProgress = 0.0f;
-        playerBallIncreement = 1.0f / iterations;
+        //this method moves the shot bubble in the path of the dotted line
+        Vector2 start = dots[0];
+        Vector2 end = dots[1];
+        float length = Vector2.Distance(start, end);
+        float iterations = length / 0.15f;
+        shotBubbleProgress = 0.0f;
+        shotBubbleInc = 1.0f / iterations;
     }
 }
