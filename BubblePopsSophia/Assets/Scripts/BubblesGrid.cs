@@ -139,6 +139,7 @@ public class BubblesGrid : MonoBehaviour
                     {
                         gridBubbles[rowCount + 1][b.column].gameObject.SetActive(false);
                     }
+                    //here we are finding the first row of bubbles because those will be interacting with the shooter
                 }
                 rowCount--;
             }
@@ -158,7 +159,7 @@ public class BubblesGrid : MonoBehaviour
         List<Bubble> neighbors = BubbleEmptyNeighbors(collisionBubble);
         float minDistance = 10000.0f;
         Bubble newBubble = null;
-
+        //Here I find the right position to place the shot bubble in the grid and also check for matches in neghbor bubbles
         foreach (Bubble n in neighbors)
         {
             float d = Vector2.Distance(n.transform.position, shotBubble.transform.position);
@@ -172,13 +173,14 @@ public class BubblesGrid : MonoBehaviour
         newBubble.SetType(shotBubble.type);
         newBubble.gameObject.SetActive(true);
 
-        CheckMatchesForBall(newBubble);
+        CheckMatchesForBubble(newBubble);
     }
 
     
     List<Bubble> BubbleEmptyNeighbors(Bubble bubble)
     {
-        var result = new List<Bubble>();
+        //this method  finds which are the empty slots near any bubble
+        List<Bubble> result = new List<Bubble>();
         if (bubble.column + 1 < COLUMNS)
         {
             if (!gridBubbles[bubble.row][bubble.column + 1].gameObject.activeSelf)
@@ -238,7 +240,7 @@ public class BubblesGrid : MonoBehaviour
         return result;
     }
 
-    public void CheckMatchesForBall(Bubble bubble)
+    public void CheckMatchesForBubble(Bubble bubble)
     {
         matchList.Clear();
 
@@ -250,30 +252,30 @@ public class BubblesGrid : MonoBehaviour
             }
         }
 
-        //search for matches around ball
-        var initialResult = GetMatches(bubble);
+        //search for matches around bubble
+        List<Bubble> initialResult = GetMatches(bubble);
         matchList.AddRange(initialResult);
 
         while (true)
         {
 
-            var allVisited = true;
-            for (var i = matchList.Count - 1; i >= 0; i--)
+            bool allVisited = true;
+            for (int i = matchList.Count - 1; i >= 0; i--)
             {
-                var b = matchList[i];
+                Bubble b = matchList[i];
                 if (!b.visited)
                 {
                     AddMatches(GetMatches(b));
                     allVisited = false;
                 }
             }
-
+            // visited is a boolean which is true when its a match
             if (allVisited)
             {
                 if (matchList.Count > 1)
                 {
-
-                    foreach (var b in matchList)
+                    //If there is a match then burst the bubble
+                    foreach (Bubble b in matchList)
                     {
                         bubbleBurstSound.Play();
                         b.gameObject.SetActive(false);
@@ -281,12 +283,11 @@ public class BubblesGrid : MonoBehaviour
                     }
 
                     CheckForDisconnected();
-
-                    //remove disconnected balls
-                    var i = 0;
+                    //remove disconnected bubbles
+                    int i = 0;
                     while (i < ROWS)
                     {
-                        foreach (var b in gridBubbles[i])
+                        foreach (Bubble b in gridBubbles[i])
                         {
                             if (!b.connected && b.gameObject.activeSelf)
                             {
@@ -305,10 +306,10 @@ public class BubblesGrid : MonoBehaviour
     List<Bubble> GetMatches(Bubble bubble)
     {
         bubble.visited = true;
-        var result = new List<Bubble>() { bubble };
-        var n = BubbleActiveNeighbors(bubble);
-
-        foreach (var b in n)
+        List<Bubble> result = new List<Bubble>() { bubble };
+        List<Bubble> n = BubbleActiveNeighbors(bubble);
+        //Here checking the bubble neghbor for color and storing matches in array
+        foreach (Bubble b in n)
         {
             if (b.type == bubble.type)
             {
@@ -321,7 +322,7 @@ public class BubblesGrid : MonoBehaviour
 
     void AddMatches(List<Bubble> matches)
     {
-        foreach (var b in matches)
+        foreach (Bubble b in matches)
         {
             if (!matchList.Contains(b))
                 matchList.Add(b);
@@ -329,7 +330,8 @@ public class BubblesGrid : MonoBehaviour
     }
     List<Bubble> BubbleActiveNeighbors(Bubble bubble)
     {
-        var result = new List<Bubble>();
+        //This Method finds all the occupied neighbour slots of a bubble
+        List<Bubble> result = new List<Bubble>();
         if (bubble.column + 1 < COLUMNS)
         {
             if (gridBubbles[bubble.row][bubble.column + 1].gameObject.activeSelf)
@@ -391,52 +393,36 @@ public class BubblesGrid : MonoBehaviour
         return result;
     }
 
-    public Bubble BallCloseToPoint(Vector2 point)
-    {
-        
-        int c = Mathf.FloorToInt((point.x + GRID_OFFSET_X + (TILE_SIZE * 0.5f)) / TILE_SIZE);
-        if (c < 0)
-            c = 0;
-        if (c >= COLUMNS)
-            c = COLUMNS - 1;
-
-        int r = Mathf.FloorToInt((GRID_OFFSET_Y + (TILE_SIZE * 0.5f) - point.y) / TILE_SIZE);
-        if (r < 0) r = 0;
-        if (r >= ROWS) r = ROWS - 1;
-
-        return gridBubbles[r][c];
-
-    }
-
+  
     void CheckForDisconnected()
     {
-        //set all balls as disconnected
-        foreach (var r in gridBubbles)
+        //set all Bubbles as disconnected
+        foreach (List<Bubble> r in gridBubbles)
         {
-            foreach (var b in r)
+            foreach (Bubble b in r)
             {
                 b.connected = false;
             }
         }
-        //connect visible balls in first row 
-        foreach (var b in gridBubbles[0])
+        //connect visible bubbles in first row 
+        foreach (Bubble b in gridBubbles[0])
         {
             if (b.gameObject.activeSelf)
                 b.connected = true;
         }
 
-        //now set connect property on the rest of the balls
-        var i = 1;
+        //now set connect property on the rest of the bubbles
+        int i = 1;
         while (i < ROWS)
         {
-            foreach (var b in gridBubbles[i])
+            foreach (Bubble b in gridBubbles[i])
             {
                 if (b.gameObject.activeSelf)
                 {
-                    var neighbors = BubbleActiveNeighbors(b);
-                    var connected = false;
+                    List<Bubble> neighbors = BubbleActiveNeighbors(b);
+                    bool connected = false;
 
-                    foreach (var n in neighbors)
+                    foreach (Bubble n in neighbors)
                     {
                         if (n.connected)
                         {
@@ -448,7 +434,7 @@ public class BubblesGrid : MonoBehaviour
                     if (connected)
                     {
                         b.connected = true;
-                        foreach (var n in neighbors)
+                        foreach (Bubble n in neighbors)
                         {
                             if (n.gameObject.activeSelf)
                             {
