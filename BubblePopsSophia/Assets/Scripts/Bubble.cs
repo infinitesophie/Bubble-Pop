@@ -29,6 +29,7 @@ public class Bubble : MonoBehaviour
     public bool visited;
     [HideInInspector]
     public bool connected;
+    
 
     private Vector3 bubblePosition;
     private BubblesGrid grid;
@@ -42,7 +43,7 @@ public class Bubble : MonoBehaviour
         }
 
     }
-
+    
     public void SetBubblePosition(BubblesGrid grid, int column, int row)
     {
 

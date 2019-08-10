@@ -17,8 +17,7 @@ public class ShotBubble : MonoBehaviour
         }
 
         this.type = type;
-        Debug.Log((int)type);
-
+        
         bubblesGO[(int)type].SetActive(true);
     }
 

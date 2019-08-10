@@ -5,10 +5,14 @@ using UnityEngine.UI;
 
 public class GameController : MonoBehaviour
 {
-    public Slider levelProgressBar;
-
-    private void Update()
+    
+    
+    void Awake()
     {
-        levelProgressBar.value = 20f;
+        GameObject[] objs = GameObject.FindGameObjectsWithTag("GameController");
+        if (objs.Length > 1)
+            Destroy(this.gameObject);
+        DontDestroyOnLoad(this.gameObject);
+
     }
 }

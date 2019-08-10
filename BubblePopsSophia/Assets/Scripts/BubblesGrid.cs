@@ -18,6 +18,7 @@ public class BubblesGrid : MonoBehaviour
     public int lines = 5;
     public GameObject gridBubbleGO;
     public GameObject BubbleBurstEffect;
+    public AudioSource bubbleBurstSound;
 
     private List<Bubble.BUBBLE_TYPE> bubbleTypePool;
     private Bubble.BUBBLE_TYPE lastType;
@@ -274,6 +275,7 @@ public class BubblesGrid : MonoBehaviour
 
                     foreach (var b in matchList)
                     {
+                        bubbleBurstSound.Play();
                         b.gameObject.SetActive(false);
                         Instantiate(BubbleBurstEffect, b.gameObject.transform.position, Quaternion.identity);
                     }
@@ -288,6 +290,7 @@ public class BubblesGrid : MonoBehaviour
                         {
                             if (!b.connected && b.gameObject.activeSelf)
                             {
+                                bubbleBurstSound.Play();
                                 b.gameObject.SetActive(false);
                                 Instantiate(BubbleBurstEffect, b.gameObject.transform.position, Quaternion.identity);
                             }
