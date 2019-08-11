@@ -122,8 +122,7 @@ public class PlayerController : MonoBehaviour
         foreach (GameObject x in dottedLine)
             x.SetActive(false);
         shotBubbleProgress = 0.0f;
-        print("MouseUpBubbleColor" + CurrentbubbleColorType);
-        //Here the currentBubbleColor is shot from the shooter 
+       //Here the currentBubbleColor is shot from the shooter 
         shotBubble.SetType((Bubble.BUBBLE_TYPE)CurrentbubbleColorType);
         shotBubble.gameObject.SetActive(true);
         shotBubble.transform.position = transform.position;
@@ -269,11 +268,6 @@ public class PlayerController : MonoBehaviour
         nextBubblesGO[nextbubbleColorType].SetActive(true);
         bullets++;
 
-        if (bullets > 10)
-        {
-            bullets = 0;
-            grid.AddLine();
-        }
     }
 
     void InitPath()

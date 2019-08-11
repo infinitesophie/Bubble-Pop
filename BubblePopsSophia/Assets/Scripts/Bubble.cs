@@ -18,6 +18,7 @@ public class Bubble : MonoBehaviour
         TYPE_9,
         TYPE_10
     }
+
     public GameObject[] colorsGO;
     [HideInInspector]
     public int row;
@@ -78,5 +79,23 @@ public class Bubble : MonoBehaviour
             return;
 
         colorsGO[(int)type].SetActive(true);
+    }
+
+    public void SetNextType(BUBBLE_TYPE type)
+    {
+
+        foreach (GameObject go in colorsGO)
+        {
+            go.SetActive(false);
+        }
+
+        this.type = type;
+
+        if (type == BUBBLE_TYPE.NONE)
+            return;
+        int i = (int)type;
+        colorsGO[i].SetActive(false);
+        print("i value"+i++);
+        colorsGO[i++].SetActive(true);
     }
 }

@@ -153,9 +153,9 @@ public class BubblesGrid : MonoBehaviour
         }
     }
 
-    public void AddBubble(Bubble collisionBubble, ShotBubble shotBubble)
+    public void AddBubble(Bubble collisionBubble, ShotBubble shotBubble )
     {
-
+        
         List<Bubble> neighbors = BubbleEmptyNeighbors(collisionBubble);
         float minDistance = 10000.0f;
         Bubble newBubble = null;
@@ -176,6 +176,16 @@ public class BubblesGrid : MonoBehaviour
         CheckMatchesForBubble(newBubble);
     }
 
+    public void BurstBubble(Bubble collisionBubble, GameObject burstburbleGO)
+    {
+        List<Bubble> neighbors = BubbleEmptyNeighbors(collisionBubble);
+        burstburbleGO.SetActive(false);
+        Bubble newBubble = collisionBubble;
+
+        newBubble.SetNextType(collisionBubble.type);
+        newBubble.gameObject.SetActive(true);
+
+    }
     
     List<Bubble> BubbleEmptyNeighbors(Bubble bubble)
     {
@@ -274,12 +284,26 @@ public class BubblesGrid : MonoBehaviour
             {
                 if (matchList.Count > 1)
                 {
+                    Bubble lastBubble = matchList[matchList.Count-1];
                     //If there is a match then burst the bubble
-                    foreach (Bubble b in matchList)
+                    int counter=1;
+                    //foreach (Bubble b in matchList)
+                    for(int count=0;count<matchList.Count;count++)
                     {
-                        bubbleBurstSound.Play();
-                        b.gameObject.SetActive(false);
-                        Instantiate(BubbleBurstEffect, b.gameObject.transform.position, Quaternion.identity);
+                       if (count== matchList.Count-1)
+                         BurstBubble(matchList[count], matchList[count].gameObject);
+                        else
+                        {
+                            PlayerPrefs.SetInt("playerScore", PlayerPrefs.GetInt("playerScore", 0) + 100);
+                            //Each match adds 100 points to score
+                            //b.SetNextType(b.type);
+                            //AddBubble(b, bubble);
+                            //bubble.gameObject.SetActive(false);
+                            bubbleBurstSound.Play();
+                            matchList[count].gameObject.SetActive(false);
+                            Instantiate(BubbleBurstEffect, matchList[count].gameObject.transform.position, Quaternion.identity);
+                        }
+                        
                     }
 
                     CheckForDisconnected();
@@ -446,5 +470,22 @@ public class BubblesGrid : MonoBehaviour
             }
             i++;
         }
+    }
+
+    public Bubble BubbleCloseToPoint(Vector2 point)
+    {
+
+        int c = Mathf.FloorToInt((point.x + GRID_OFFSET_X + (TILE_SIZE * 0.5f)) / TILE_SIZE);
+        if (c < 0)
+            c = 0;
+        if (c >= COLUMNS)
+            c = COLUMNS - 1;
+
+        int r = Mathf.FloorToInt((GRID_OFFSET_Y + (TILE_SIZE * 0.5f) - point.y) / TILE_SIZE);
+        if (r < 0) r = 0;
+        if (r >= ROWS) r = ROWS - 1;
+
+        return gridBubbles[r][c];
+
     }
 }

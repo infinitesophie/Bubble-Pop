@@ -16,7 +16,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &2460420942580155755
 Transform:
   m_ObjectHideFlags: 0
@@ -163,12 +163,12 @@ TextMesh:
   m_GameObject: {fileID: 2460420942800360588}
   m_Text: 2
   m_OffsetZ: 0
-  m_CharacterSize: 1
+  m_CharacterSize: 0.03
   m_LineSpacing: 1
   m_Anchor: 4
   m_Alignment: 1
   m_TabSize: 4
-  m_FontSize: 0
+  m_FontSize: 400
   m_FontStyle: 1
   m_RichText: 1
   m_Font: {fileID: 12800000, guid: 58b647c5b2ec4184e9a07a561cdf0644, type: 3}
