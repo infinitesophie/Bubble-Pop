@@ -9,6 +9,7 @@ public class ScoreUpdate : MonoBehaviour
     public  float levelScoreNeeded;
     public Slider ScoreSlider;
     public AudioSource bubbleBurstSound;
+    public Text Score;
     void Start()
     {
         PlayerPrefs.SetInt("playerScore", 0);
@@ -18,13 +19,26 @@ public class ScoreUpdate : MonoBehaviour
 
     void Update()
     {
+        
         ScoreSlider.value = PlayerPrefs.GetInt("playerScore", 0);
-
+        Score.text = ScoreSlider.value.ToString();
         if (ScoreSlider.value == levelScoreNeeded)
         {
             bubbleBurstSound.Play();
             PlayerPrefs.SetInt("playerScore", 0);
+            StartCoroutine(WaitASec(4));
             SceneManager.LoadScene("EndGame");
         }
+        
+    }
+    IEnumerator WaitASec(float waitTime)
+    {
+        yield return new WaitForSeconds(waitTime);
+        Debug.Log("Waited a sec");
+        foreach (GameObject o in Object.FindObjectsOfType<GameObject>())
+        {
+            Destroy(o);
+        }
+
     }
 }

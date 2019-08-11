@@ -18,7 +18,7 @@ public class Bubble : MonoBehaviour
         TYPE_9,
         TYPE_10
     }
-
+   
     public GameObject[] colorsGO;
     [HideInInspector]
     public int row;
@@ -27,10 +27,11 @@ public class Bubble : MonoBehaviour
     [HideInInspector]
     public BUBBLE_TYPE type;
     [HideInInspector]
+    public int BubbleValue;
+    [HideInInspector]
     public bool visited;
     [HideInInspector]
     public bool connected;
-    
 
     private Vector3 bubblePosition;
     private BubblesGrid grid;
@@ -74,28 +75,84 @@ public class Bubble : MonoBehaviour
         }
 
         this.type = type;
-
+        this.BubbleValue = GetValue((int)type);
         if (type == BUBBLE_TYPE.NONE)
             return;
 
         colorsGO[(int)type].SetActive(true);
     }
 
-    public void SetNextType(BUBBLE_TYPE type)
+    
+    public void SetNextType(BUBBLE_TYPE type, int matches)
     {
 
         foreach (GameObject go in colorsGO)
         {
             go.SetActive(false);
         }
+        
+        int newType = GetBubbleTypeFromValue(matches * GetValue((int)type));
 
-        this.type = type;
-
+        this.type = (BUBBLE_TYPE)newType;
+        this.BubbleValue = GetValue(newType);
         if (type == BUBBLE_TYPE.NONE)
             return;
-        int i = (int)type;
-        colorsGO[i].SetActive(false);
-        print("i value"+i++);
-        colorsGO[i++].SetActive(true);
+
+        colorsGO[newType].SetActive(true);
+    }
+
+    public int GetValue(int BubbleType)
+    {
+        switch (BubbleType)
+        { case 0:
+                return 2;
+            case 1:
+                return 4;
+            case 2:
+                return 8;
+            case 3:
+                return 16;
+            case 4:
+                return 32;
+            case 5:
+                return 64;
+            case 6:
+                return 128;
+            case 7:
+                return 256;
+            case 8:
+                return 512;
+            case 9:
+                return 1024;
+        }
+        return 2;
+    }
+
+    public int GetBubbleTypeFromValue(int BubbleTypeValue)
+    {
+        switch (BubbleTypeValue)
+        {
+            case 2:
+                return 0;
+            case 4:
+                return 1;
+            case 8:
+                return 2;
+            case 16:
+                return 3;
+            case 32:
+                return 4;
+            case 64:
+                return 5;
+            case 128:
+                return 6;
+            case 256:
+                return 7;
+            case 512:
+                return 8;
+            case 1024:
+                return 9;
+        }
+        return 0;
     }
 }

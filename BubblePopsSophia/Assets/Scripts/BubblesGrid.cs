@@ -176,15 +176,15 @@ public class BubblesGrid : MonoBehaviour
         CheckMatchesForBubble(newBubble);
     }
 
-    public void BurstBubble(Bubble collisionBubble, GameObject burstburbleGO)
+    public void BurstBubble(Bubble collisionBubble, GameObject burstbubbleGO, int matchListloopLength)
     {
-        List<Bubble> neighbors = BubbleEmptyNeighbors(collisionBubble);
-        burstburbleGO.SetActive(false);
+        burstbubbleGO.SetActive(false);
         Bubble newBubble = collisionBubble;
-
-        newBubble.SetNextType(collisionBubble.type);
+        
+       
+        newBubble.SetNextType(collisionBubble.type, matchListloopLength);
+        collisionBubble.gameObject.SetActive(false);
         newBubble.gameObject.SetActive(true);
-
     }
     
     List<Bubble> BubbleEmptyNeighbors(Bubble bubble)
@@ -284,24 +284,36 @@ public class BubblesGrid : MonoBehaviour
             {
                 if (matchList.Count > 1)
                 {
-                    Bubble lastBubble = matchList[matchList.Count-1];
                     //If there is a match then burst the bubble
-                    int counter=1;
-                    //foreach (Bubble b in matchList)
-                    for(int count=0;count<matchList.Count;count++)
+                    Bubble lastBubble = matchList[matchList.Count - 1];
+                    int matchListloopLength;
+                    if (matchList.Count % 2 == 0)
+                        matchListloopLength = matchList.Count;
+                    else
                     {
-                       if (count== matchList.Count-1)
-                         BurstBubble(matchList[count], matchList[count].gameObject);
+                        matchListloopLength = matchList.Count - 1;
+                        lastBubble.gameObject.SetActive(false);
+                        Instantiate(BubbleBurstEffect, lastBubble.gameObject.transform.position, Quaternion.identity);
+                        PlayerPrefs.SetInt("playerScore", PlayerPrefs.GetInt("playerScore", 0) + lastBubble.BubbleValue * 10);
+
+                    }
+                    print("loop length" + matchListloopLength);
+                    for (int counter = 0; counter < matchListloopLength; counter++)
+                    {
+                       
+                       if (counter== matchListloopLength - 1)
+                         BurstBubble(matchList[counter], matchList[counter].gameObject, matchListloopLength);
+
                         else
                         {
-                            PlayerPrefs.SetInt("playerScore", PlayerPrefs.GetInt("playerScore", 0) + 100);
-                            //Each match adds 100 points to score
+                            PlayerPrefs.SetInt("playerScore", PlayerPrefs.GetInt("playerScore", 0) + matchList[counter].BubbleValue*10);
+                            //Each match adds points to score based on bubble value
                             //b.SetNextType(b.type);
                             //AddBubble(b, bubble);
                             //bubble.gameObject.SetActive(false);
                             bubbleBurstSound.Play();
-                            matchList[count].gameObject.SetActive(false);
-                            Instantiate(BubbleBurstEffect, matchList[count].gameObject.transform.position, Quaternion.identity);
+                            matchList[counter].gameObject.SetActive(false);
+                            Instantiate(BubbleBurstEffect, matchList[counter].gameObject.transform.position, Quaternion.identity);
                         }
                         
                     }

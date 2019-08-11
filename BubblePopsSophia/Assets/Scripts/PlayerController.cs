@@ -149,7 +149,8 @@ public class PlayerController : MonoBehaviour
         //Setting the transform of the dots at the position of touchDirection
         Vector2 point = Camera.main.ScreenToWorldPoint(touch);
         Vector2 direction = new Vector2(point.x - transform.position.x, point.y - transform.position.y);
-        
+        Vector3 newPostion = Vector3.MoveTowards(shotBubble.transform.position, point, 10f * Time.deltaTime);
+
         //Raycasting
         RaycastHit2D hit = Physics2D.Raycast(transform.position, direction);
         if (hit.collider != null)
@@ -177,6 +178,7 @@ public class PlayerController : MonoBehaviour
         Vector2 reflection = new Vector2(-Mathf.Cos(newDirection), -Mathf.Sin(newDirection));
         Vector2 newCastPoint = previousHit.point + (2 * reflection);
 
+        Vector3 newPostion = Vector3.MoveTowards(shotBubble.transform.position, newCastPoint, 10f * Time.deltaTime);
         RaycastHit2D hit2 = Physics2D.Raycast(newCastPoint, reflection);
         if (hit2.collider != null)
         {
@@ -266,8 +268,13 @@ public class PlayerController : MonoBehaviour
         nextbubbleColorType = Random.Range(0, 7);   
         //randomizing till 7(128 bubbletype) because I dont want bigger numbers 
         nextBubblesGO[nextbubbleColorType].SetActive(true);
-        bullets++;
 
+        bullets++;
+        if (bullets > 5)
+        {
+            bullets = 0;
+            grid.AddLine();
+        }
     }
 
     void InitPath()
