@@ -16,7 +16,7 @@ public class PlayerController : MonoBehaviour
     private bool mouseDown = false;
     private int dotsLength = 30;
     private float dotGap = 0.3f;
-
+    private Rigidbody2D rb;
     private float shotBubbleProgress = 0.0f;
     private float shotBubbleInc = 0.0f;
     private int CurrentbubbleColorType = 0;
@@ -30,7 +30,7 @@ public class PlayerController : MonoBehaviour
         float alpha = 1.0f / dotsLength;
         float startAlpha = 1;
         int i = 0;
-        
+         rb = shotBubble.GetComponent<Rigidbody2D>();
         //Instantiate dots
         while (i < dotsLength)
         {
@@ -149,9 +149,8 @@ public class PlayerController : MonoBehaviour
         //Setting the transform of the dots at the position of touchDirection
         Vector2 point = Camera.main.ScreenToWorldPoint(touch);
         Vector2 direction = new Vector2(point.x - transform.position.x, point.y - transform.position.y);
-        Vector3 newPostion = Vector3.MoveTowards(shotBubble.transform.position, point, 10f * Time.deltaTime);
-
-        //Raycasting
+        Vector3 newPostion = Vector3.MoveTowards(shotBubble.transform.position, point, 20 * Time.deltaTime);
+         //Raycasting
         RaycastHit2D hit = Physics2D.Raycast(transform.position, direction);
         if (hit.collider != null)
         {
@@ -178,7 +177,7 @@ public class PlayerController : MonoBehaviour
         Vector2 reflection = new Vector2(-Mathf.Cos(newDirection), -Mathf.Sin(newDirection));
         Vector2 newCastPoint = previousHit.point + (2 * reflection);
 
-        Vector3 newPostion = Vector3.MoveTowards(shotBubble.transform.position, newCastPoint, 10f * Time.deltaTime);
+        Vector3 newPostion = Vector3.MoveTowards(shotBubble.transform.position, newCastPoint, 20 * Time.deltaTime);
         RaycastHit2D hit2 = Physics2D.Raycast(newCastPoint, reflection);
         if (hit2.collider != null)
         {

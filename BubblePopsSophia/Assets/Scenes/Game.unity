@@ -1423,7 +1423,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 31a8fc834fb986946a2aab6caabe6903, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  levelScoreNeeded: 2000
+  levelScoreNeeded: 4000
   ScoreSlider: {fileID: 1277619426}
   bubbleBurstSound: {fileID: 1277619428}
   Score: {fileID: 513819485}

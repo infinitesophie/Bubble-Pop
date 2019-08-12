@@ -90,9 +90,9 @@ public class Bubble : MonoBehaviour
         {
             go.SetActive(false);
         }
-        
+        int 
         int newType = GetBubbleTypeFromValue(matches * GetValue((int)type));
-
+        //this logic will multiply all similar bubbles and give the value of the new sum
         this.type = (BUBBLE_TYPE)newType;
         this.BubbleValue = GetValue(newType);
         if (type == BUBBLE_TYPE.NONE)

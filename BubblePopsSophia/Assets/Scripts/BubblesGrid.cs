@@ -176,15 +176,16 @@ public class BubblesGrid : MonoBehaviour
         CheckMatchesForBubble(newBubble);
     }
 
-    public void BurstBubble(Bubble collisionBubble, GameObject burstbubbleGO, int matchListloopLength)
+    public void MergeBubble(Bubble collisionBubble, GameObject burstbubbleGO, int matchListloopLength)
     {
+        List<Bubble> neighbors = BubbleEmptyNeighbors(collisionBubble);
         burstbubbleGO.SetActive(false);
         Bubble newBubble = collisionBubble;
-        
-       
+        //if there is a match I merge the bubbles and set new type and check again for matches
         newBubble.SetNextType(collisionBubble.type, matchListloopLength);
         collisionBubble.gameObject.SetActive(false);
         newBubble.gameObject.SetActive(true);
+        CheckMatchesForBubble(newBubble);
     }
     
     List<Bubble> BubbleEmptyNeighbors(Bubble bubble)
@@ -284,10 +285,10 @@ public class BubblesGrid : MonoBehaviour
             {
                 if (matchList.Count > 1)
                 {
-                    //If there is a match then burst the bubble
+                    //If there is a match then merge the bubble
                     Bubble lastBubble = matchList[matchList.Count - 1];
                     int matchListloopLength;
-                    if (matchList.Count % 2 == 0)
+                    if (matchList.Count % 2 == 0)   //if the matches are even its a direct calculation
                         matchListloopLength = matchList.Count;
                     else
                     {
@@ -301,16 +302,12 @@ public class BubblesGrid : MonoBehaviour
                     for (int counter = 0; counter < matchListloopLength; counter++)
                     {
                        
-                       if (counter== matchListloopLength - 1)
-                         BurstBubble(matchList[counter], matchList[counter].gameObject, matchListloopLength);
+                       if (counter== matchListloopLength - 1)   //keep merging bubbles and checking for neighbour matches
+                         MergeBubble(matchList[counter], matchList[counter].gameObject, matchListloopLength);
 
                         else
                         {
                             PlayerPrefs.SetInt("playerScore", PlayerPrefs.GetInt("playerScore", 0) + matchList[counter].BubbleValue*10);
-                            //Each match adds points to score based on bubble value
-                            //b.SetNextType(b.type);
-                            //AddBubble(b, bubble);
-                            //bubble.gameObject.SetActive(false);
                             bubbleBurstSound.Play();
                             matchList[counter].gameObject.SetActive(false);
                             Instantiate(BubbleBurstEffect, matchList[counter].gameObject.transform.position, Quaternion.identity);

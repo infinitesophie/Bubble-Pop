@@ -9,7 +9,10 @@ public class LoadLevel : MonoBehaviour
     {
         SceneManager.LoadScene("Game");
     }
-
+    public void ToLevel2()
+    {
+        SceneManager.LoadScene("Level 2");
+    }
     public void ToMenu()
     {
         SceneManager.LoadScene("Menu");

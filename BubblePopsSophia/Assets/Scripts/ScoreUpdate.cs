@@ -34,7 +34,6 @@ public class ScoreUpdate : MonoBehaviour
     IEnumerator WaitASec(float waitTime)
     {
         yield return new WaitForSeconds(waitTime);
-        Debug.Log("Waited a sec");
         foreach (GameObject o in Object.FindObjectsOfType<GameObject>())
         {
             Destroy(o);
