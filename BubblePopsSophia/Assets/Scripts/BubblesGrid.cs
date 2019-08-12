@@ -286,25 +286,13 @@ public class BubblesGrid : MonoBehaviour
                 if (matchList.Count > 1)
                 {
                     //If there is a match then merge the bubble
-                    Bubble lastBubble = matchList[matchList.Count - 1];
-                    int matchListloopLength;
-                    if (matchList.Count % 2 == 0)   //if the matches are even its a direct calculation
-                        matchListloopLength = matchList.Count;
-                    else
-                    {
-                        matchListloopLength = matchList.Count - 1;
-                        lastBubble.gameObject.SetActive(false);
-                        Instantiate(BubbleBurstEffect, lastBubble.gameObject.transform.position, Quaternion.identity);
-                        PlayerPrefs.SetInt("playerScore", PlayerPrefs.GetInt("playerScore", 0) + lastBubble.BubbleValue * 10);
-
-                    }
-                    print("loop length" + matchListloopLength);
-                    for (int counter = 0; counter < matchListloopLength; counter++)
+                    
+                    for (int counter = 0; counter < matchList.Count; counter++)
                     {
                        
-                       if (counter== matchListloopLength - 1)   //keep merging bubbles and checking for neighbour matches
-                         MergeBubble(matchList[counter], matchList[counter].gameObject, matchListloopLength);
-
+                       if (counter== matchList.Count - 1)   //keep merging bubbles and checking for neighbour matches
+                         MergeBubble(matchList[counter], matchList[counter].gameObject, matchList.Count);
+                          
                         else
                         {
                             PlayerPrefs.SetInt("playerScore", PlayerPrefs.GetInt("playerScore", 0) + matchList[counter].BubbleValue*10);

@@ -90,7 +90,7 @@ public class Bubble : MonoBehaviour
         {
             go.SetActive(false);
         }
-        int 
+       
         int newType = GetBubbleTypeFromValue(matches * GetValue((int)type));
         //this logic will multiply all similar bubbles and give the value of the new sum
         this.type = (BUBBLE_TYPE)newType;
@@ -130,29 +130,28 @@ public class Bubble : MonoBehaviour
 
     public int GetBubbleTypeFromValue(int BubbleTypeValue)
     {
-        switch (BubbleTypeValue)
-        {
-            case 2:
+       
+            if(BubbleTypeValue>0 && BubbleTypeValue<=2)
                 return 0;
-            case 4:
+            else if(BubbleTypeValue > 2 && BubbleTypeValue <=4)
                 return 1;
-            case 8:
-                return 2;
-            case 16:
-                return 3;
-            case 32:
-                return 4;
-            case 64:
-                return 5;
-            case 128:
-                return 6;
-            case 256:
-                return 7;
-            case 512:
-                return 8;
-            case 1024:
-                return 9;
-        }
+            else if (BubbleTypeValue > 4 && BubbleTypeValue <= 8)
+            return 2;
+            else if (BubbleTypeValue > 8 && BubbleTypeValue <= 16)
+            return 3;
+            else if (BubbleTypeValue > 16 && BubbleTypeValue <= 32)
+            return 4;
+            else if (BubbleTypeValue > 32 && BubbleTypeValue <= 64)
+            return 5;
+            else if (BubbleTypeValue > 64 && BubbleTypeValue <= 128)
+            return 6;
+            else if (BubbleTypeValue > 128 && BubbleTypeValue <= 256)
+            return 7;
+            else if (BubbleTypeValue > 256 && BubbleTypeValue <= 512)
+            return 8;
+            else if (BubbleTypeValue > 512 && BubbleTypeValue <= 1024)
+            return 9;
+        else
         return 0;
     }
 }
