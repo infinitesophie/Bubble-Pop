@@ -469,20 +469,5 @@ public class BubblesGrid : MonoBehaviour
         }
     }
 
-    public Bubble BubbleCloseToPoint(Vector2 point)
-    {
-
-        int c = Mathf.FloorToInt((point.x + GRID_OFFSET_X + (TILE_SIZE * 0.5f)) / TILE_SIZE);
-        if (c < 0)
-            c = 0;
-        if (c >= COLUMNS)
-            c = COLUMNS - 1;
-
-        int r = Mathf.FloorToInt((GRID_OFFSET_Y + (TILE_SIZE * 0.5f) - point.y) / TILE_SIZE);
-        if (r < 0) r = 0;
-        if (r >= ROWS) r = ROWS - 1;
-
-        return gridBubbles[r][c];
-
-    }
+  
 }
